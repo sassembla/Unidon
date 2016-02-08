@@ -33,7 +33,7 @@ namespace UniCMS {
 		
 		public void OpenSceneFromURL (string url) {
 			cont.StartCoroutine(CacheReadyThenOpenScene(url + "resources", (AssetBundle sceneResources) => {
-				
+				sceneResources.LoadAllAssets();
 				cont.StartCoroutine(CacheReadyThenOpenScene(url, (AssetBundle asset) => {
 					OpenSceneAsset(asset.GetAllScenePaths()[0]);
 				}));

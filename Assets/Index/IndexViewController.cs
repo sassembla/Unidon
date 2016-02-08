@@ -10,12 +10,17 @@ public class IndexViewController : MonoBehaviour {
 	public void Awake () {
 		Debug.LogError("ここでリストをResから読み出す。ビルド工程を通過してればそのまま使えるはず。");
 		indexies = new List<string>();
+		
+		// create canvas.
+		var canvas = new GameObject("Canvas", typeof(Canvas));
+		
+		
 	}
 	
 	public void GoToIndex (int index) {
 		// ここでurlを中継、indexiesに入っているurlを元に、っていう。
 		// まずシーン呼び出しをするタイミングでリソースは分かれているのかな？っていう。まあ全部Assetでもいいんですが。
 		// そしたらビルドの意味論が変わるだけなんで。
-		
+		Debug.LogError("hannnanana");
 	}
 }

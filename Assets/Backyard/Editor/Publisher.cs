@@ -7,8 +7,9 @@ namespace UniCMS {
     public class Publisher {
 		[MenuItem ("UniCMS/Generate link.xml")]
 		static void GenerateLinkXML () {
-			var classIds = new List<int>{223, 108};
+			var classIds = new List<int>{23, 65, 33, 223, 213, 222};
 			ClassIdCollector.ExportLinkXMLWithUsingClassIds(classIds);
+			AssetDatabase.Refresh();
 		}
 		
 		[MenuItem ("UniCMS/Build Contents")]
