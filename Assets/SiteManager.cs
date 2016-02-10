@@ -23,6 +23,7 @@ namespace UniCMS {
 			this.basePath = indexUrl.Replace(UniCMS.BOOT_HTML_NAME, string.Empty);
 			this.targetAssetPathBase = Path.Combine(basePath, "AssetBundles");
 			
+			Debug.Log("多分効いてないCleanCache");
 			Caching.CleanCache();
 		}
 		
@@ -69,7 +70,9 @@ namespace UniCMS {
 			
 			
 			if (Caching.IsVersionCached(sceneUrl, 0)) {
-				Debug.Log("asset is already cached, but not managed yet.");
+				Debug.Log("asset is already cached, but not managed yet. sceneUrl:" + sceneUrl);
+			} else {
+				Debug.Log("not cached yet. sceneUrl:" + sceneUrl);
 			}
 			
 			AssetBundle asset;
@@ -87,6 +90,7 @@ namespace UniCMS {
 				
 				asset = www.assetBundle;
 			}
+			
 			
 			Finally(asset);
 		}
