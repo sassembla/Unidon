@@ -2,26 +2,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using UnityEngine.EventSystems;
+using UniCMS;
 
 public class IndexViewController : MonoBehaviour {
 	
-	private List<string> indexies;
-	
 	
 	public void Awake () {
-		Debug.LogError("ここでリストをResから読み出す。ビルド工程を通過してればそのまま使えるはず。");
-		indexies = new List<string>();
-		
 		// シーンに置いたキューブはそのまま出た。
 		// ただ、なんかbuttonとかtextがmissingってでるな、、ffのキャッシュではない。
 		
-		// create canvas. 出現を確認しよう。
-		var canvas = new GameObject("Canvas", typeof(Canvas));
+		// create canvas. ここまでは成立してる。エラーもなし。
+		// var canvas = new GameObject("Canvas", typeof(Canvas));
 		
-		var found = GameObject.Find("Canvas");
-		Debug.LogError("canvas is alive? found:" + found);
+		// // eventSystemも作らないといけない。
+		// var eventSystem = new GameObject("EventSystem", typeof(EventSystem));
 		
-		Connect();
+		// で。これと同じことを、AssetBundleを元に行う。
+		// ・既存のものを読み出すと、missingが出る。なんで？？
+		
+		
+		// Connect();
 		
 		// SendLog("from C#");
 	}

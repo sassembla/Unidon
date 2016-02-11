@@ -16,8 +16,10 @@ namespace UniCMS {
 		
 		private static SiteManager siteManager;
 		
-		[RuntimeInitializeOnLoadMethod]
-		static void OnRuntimeMethodLoad () {
+		/*
+			this method will running between Awake and Start.
+		*/
+		[RuntimeInitializeOnLoadMethod] static void OnRuntimeMethodLoad () {
 			var dataPath = Application.dataPath;
 			var url = string.Empty;
 			
@@ -58,9 +60,9 @@ namespace UniCMS {
 			// Q.使用してないリソースがこのプロジェクトに増えた場合ってどうなるの？画像とか。
 			// A.当然、容量は増えないので平和っぽい。
 			
+			// use this for debugging, editing.
 			if (SceneManager.GetActiveScene().name != "Boot") {
 				Debug.LogError("this is not Boot scene, current scene is:" + SceneManager.GetActiveScene().name);	
-				SceneManager.LoadSceneAsync("Boot", LoadSceneMode.Additive);
 				return;
 			}
 			

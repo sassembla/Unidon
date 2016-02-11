@@ -7,9 +7,17 @@ namespace UniCMS {
     public class Publisher {
 		[MenuItem ("UniCMS/Generate link.xml")]
 		static void GenerateLinkXML () {
-			var classIds = new List<int>{23, 65, 33, 223, 213, 222};
-			ClassIdCollector.ExportLinkXMLWithUsingClassIds(classIds);
-			AssetDatabase.Refresh();
+			Debug.LogError("unused. this mechanism is not so effective yet. read comment of below of this Debug.LogError.");
+			/*
+				えーっとScriptのサイズを小さくしつつAssetBundleでのローディング最小化を目指して色々粘ってみたんですが
+				link.xmlは全く無意味でしたよ。悲しい。
+				http://sassembla.github.io/Public/2016:02:11%204-33-38/2016:02:11%204-33-38.html
+				
+				いろいろ判明するまで放置。
+			*/
+			// var classIds = new List<int>{23, 65, 33, 223, 213, 222};
+			// ClassIdCollector.ExportLinkXMLWithUsingClassIds(classIds);
+			// AssetDatabase.Refresh();
 		}
 		
 		[MenuItem ("UniCMS/Build Contents")]
@@ -22,7 +30,7 @@ namespace UniCMS {
 		
 		[MenuItem ("UniCMS/Publish Site")]
 		static void Publish () {
-			GenerateLinkXML();
+			// GenerateLinkXML();
 			
 			BuildContentAssets();
 			

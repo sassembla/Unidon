@@ -6,7 +6,7 @@ using ARWebSocket;
 using ARWebSocket.Server;
 
 /**
-	Send log message to browser.
+	Receive log message from browser.
 */
 public class WSServerInstance : WebSocketBehavior {
 
@@ -15,14 +15,10 @@ public class WSServerInstance : WebSocketBehavior {
 	}
 
 	protected override void OnOpen () {
-		// Send("Log:---------- connected to Unity:" + DateTime.Now + " ----------");
-
-		// ServerInitializer.Initialized(this.SendToBrowser);
+		Debug.Log("client connected.");
 	}
 
-	protected override void OnClose (CloseEventArgs e) {}
-
-	// public void SendToBrowser (string message) {
-	// 	Send(message);
-	// }
+	protected override void OnClose (CloseEventArgs e) {
+		Debug.Log("code:"+ e.Code + " reason:" + e.Reason);
+	}
 }

@@ -5,14 +5,16 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace UniCMS {
-	public class SiteManager {
+namespace UniCMS
+{
+    public class SiteManager {
 		private readonly GameObject siteManagerObj;
 		private BootViewController cont;
 		
 		private readonly string basePath;
 		private readonly string targetAssetPathBase;
 		
+		public static SiteManager sManager;
 		
 		private List<string> loadingUrls = new List<string>();
 		
@@ -23,20 +25,29 @@ namespace UniCMS {
 			this.basePath = indexUrl.Replace(UniCMS.BOOT_HTML_NAME, string.Empty);
 			this.targetAssetPathBase = Path.Combine(basePath, "AssetBundles");
 			
-			Debug.Log("多分効いてないCleanCache");
 			Caching.CleanCache();
+			sManager = this;
 		}
 		
 		public void LoadIndexView () {
-			var targetSceneAssetPath = Path.Combine(targetAssetPathBase, "index");
-			OpenSceneFromURL(targetSceneAssetPath);
+			var sceneName = "index";
+			var targetSceneAssetPath = Path.Combine(targetAssetPathBase, sceneName);
+			OpenSceneFromURL(sceneName, targetSceneAssetPath);
 		}
 		
-		public void OpenSceneFromURL (string url) {
+		public void OpenSceneFromURL (string sceneName, string url) {
 			cont.StartCoroutine(CacheReadyThenOpenScene(url + "resources", (AssetBundle sceneResources) => {
-				sceneResources.LoadAllAssets();
+				Debug.Log("succeeded to load asset of scene:" + url);
+				
+				// open contentsPaths.
+				var contentsPaths = new List<string> {
+					// "Assets/Index/Camera.prefab",
+					// "Assets/Index/Canvas.prefab",
+					// "Assets/Index/EventSystem.prefab"
+				};
+				
 				cont.StartCoroutine(CacheReadyThenOpenScene(url, (AssetBundle asset) => {
-					OpenSceneAsset(asset.GetAllScenePaths()[0]);
+					OpenSceneAsset(asset.GetAllScenePaths()[0], sceneResources, contentsPaths);
 				}));
 			}));
 		}
@@ -67,8 +78,6 @@ namespace UniCMS {
 		private IEnumerator OpenScene (string sceneUrl, Action<AssetBundle> Finally) {
 			Debug.Log("start loading asset from:" + sceneUrl);
 			
-			
-			
 			if (Caching.IsVersionCached(sceneUrl, 0)) {
 				Debug.Log("asset is already cached, but not managed yet. sceneUrl:" + sceneUrl);
 			} else {
@@ -95,11 +104,20 @@ namespace UniCMS {
 			Finally(asset);
 		}
 		
-		private void OpenSceneAsset (string sceneNameSourceStr) {
-			var sceneName = ToSceneName(sceneNameSourceStr);
+		private void OpenSceneAsset (string sceneNameSourceStr, AssetBundle sceneResources, List<string> contentsPaths) {
+			var bundledSceneName = ToSceneName(sceneNameSourceStr);
 			
-			// WebGL build does not have multithread yet. start opening scene.
-			SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+			// load scene syncronously.
+			SceneManager.LoadScene(bundledSceneName, LoadSceneMode.Single);
+			
+			foreach (var contentsPath in contentsPaths) {
+				var obj = sceneResources.LoadAsset(contentsPath);
+				var instantiated = GameObject.Instantiate(obj) as GameObject;
+				UnityEngine.Object.DontDestroyOnLoad(instantiated);
+				
+				var destinationScene = SceneManager.GetSceneByName(bundledSceneName);
+				SceneManager.MoveGameObjectToScene(instantiated, destinationScene);
+			}
 		}
 		
 		private string ToSceneName(string path) {
