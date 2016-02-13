@@ -2,15 +2,17 @@
 using UnityEditor;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace UniCMS {
     public class Publisher {
-		[MenuItem ("Unidon/Generate link.xml")]
-		static void GenerateLinkXML () {
+		
+		[MenuItem ("Unidon/Generate link.xml")] static void GenerateLinkXML () {
 			Debug.LogError("unused. this mechanism is not so effective yet. read comment of below of this Debug.LogError.");
 			/*
 				えーっとScriptのサイズを小さくしつつAssetBundleでのローディング最小化を目指して色々粘ってみたんですが
-				link.xmlは全く無意味でしたよ。悲しい。
+				link.xmlは書いたものが読み込まれるものの自動的なコードのattachに失敗するので全く無意味でしたよ。悲しい。
+				今はdependenciesをbootに持つことで解決してる。
 				http://sassembla.github.io/Public/2016:02:11%204-33-38/2016:02:11%204-33-38.html
 				
 				いろいろ判明するまで放置。
@@ -20,22 +22,44 @@ namespace UniCMS {
 			// AssetDatabase.Refresh();
 		}
 		
-		[MenuItem ("Unidon/Build Contents")]
-		static void BuildContentAssets () {
+		
+		[MenuItem ("Unidon/Build Contents")] static void BuildContentAssets () {
+			// automatically set assetbundle mark to specific path.
+			var bundleTargetBasePath = FileController.PathCombine(Application.dataPath, UniCMS.CONTENTS_PATH);
+			var targetSceneFilePaths = FileController.FilePathsInFolder(bundleTargetBasePath)
+				.Where(path => IsQualified(path))
+				.Select(path => path.Replace(Application.dataPath, "Assets"))
+				.ToList(); 
+			
+			foreach (var targetSceneFilePath in targetSceneFilePaths) {
+				var assetName = Path.GetFileNameWithoutExtension(targetSceneFilePath).ToLower();
+				var importer = AssetImporter.GetAtPath(targetSceneFilePath);
+				importer.assetBundleName = assetName;
+			}
+			
 			var assetTargetPath = FileController.PathCombine(Directory.GetParent(Application.dataPath).ToString(), "UnidonWeb/AssetBundles");
 			FileController.RemakeDirectory(assetTargetPath);
 			BuildPipeline.BuildAssetBundles(assetTargetPath, 0, BuildTarget.WebGL);
-			// んで、ここで作ったAssetBundleを、リストとして出す必要がある。
 		}
 		
-		[MenuItem ("Unidon/Publish Site")]
-		static void Publish () {
+		
+		[MenuItem ("Unidon/Publish Site")] static void Publish () {
 			// GenerateLinkXML();
 			
 			BuildContentAssets();
 			
 			var targetPath = FileController.PathCombine(Directory.GetParent(Application.dataPath).ToString(), "UnidonWeb");
 			BuildPipeline.BuildPlayer(new string[]{"Assets/Basement/Boot.unity"}, targetPath, BuildTarget.WebGL, 0);
+		}
+		
+		
+		private static bool IsQualified (string path) {
+			if (!path.EndsWith(UniCMS.CONTENTS_TARGET_EXTENSION)) return false;
+			
+			var fileName = Path.GetFileNameWithoutExtension(path);
+			var folderName = Path.GetFileName(Directory.GetParent(path).ToString());
+			if (fileName == folderName) return true; 
+			return false;
 		}
 	}
 }

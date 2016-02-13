@@ -8,6 +8,9 @@ namespace UniCMS {
 	public class UniCMS {
 		public const string BOOT_HTML_NAME = "index.html";
 		public const string PATH_DELIMITER = "/";
+		
+		public const string CONTENTS_PATH = "Contents";
+		public const string CONTENTS_TARGET_EXTENSION = ".unity";
 	}
 	
 	public class BootViewController : MonoBehaviour {

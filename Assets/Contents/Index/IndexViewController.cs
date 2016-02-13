@@ -12,27 +12,19 @@ public class IndexViewController : MonoBehaviour {
 	
 	public void ShowContext () {
 		// 右クリックを検知できるのかな。そもそもなんかキーバインド持って行かれてるきがするな。
-		Debug.LogError("right clicker.");
+		// 
 	}
 	
 	public void GoToIndex (int index) {
 		switch (index) {
 			default: {
-				var url = "page" + (index + 1);
-				SiteManager.sManager.OpenUrl(url);
+				var sceneName = "page" + (index + 1);
+				SiteManager.sManager.OpenScene(sceneName);
 				break;
 			}
 		}
 		
 	}
-	
-	int frame = 0; 
-	
-	public void OnGUI () {
-		
-		frame ++;
-	}
-	
 	
     [DllImport("__Internal")] private static extern void Connect();
 

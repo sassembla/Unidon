@@ -15,7 +15,6 @@ public class P1Controller : MonoBehaviour {
 	}
 	
 	public void OnBackTapped () {
-		Debug.LogError("back!");
 		SiteManager.sManager.BackToIndex();
 	}
 }

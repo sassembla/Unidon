@@ -51,9 +51,12 @@ namespace UniCMS
 				return;
 			}
 			
-			// もし、preloadされてたAssetBundleをロードしたいなら、ここで。できるようにはなったけどうーんっていう。
-			
 			var sceneName = url;
+			var targetSceneAssetPath = Path.Combine(targetAssetPathBase, sceneName);
+			OpenSceneFromURL(sceneName, targetSceneAssetPath);
+		}
+		
+		public void OpenScene (string sceneName) {
 			var targetSceneAssetPath = Path.Combine(targetAssetPathBase, sceneName);
 			OpenSceneFromURL(sceneName, targetSceneAssetPath);
 		}
@@ -61,42 +64,20 @@ namespace UniCMS
 		public void OpenSceneFromURL (string sceneName, string url) {
 			// already cached, load from cache.
 			if (Caching.IsVersionCached(url, 0)) {
-				var contentsPaths = new List<string>();
-				var sceneResources = assetCache[url + "resources"];
 				var sceneAsset = assetCache[url];
-				OpenSceneAsset(sceneAsset.GetAllScenePaths()[0], sceneResources, contentsPaths);
+				OpenSceneAsset(sceneAsset.GetAllScenePaths()[0]);
 				return;
 			}
 			
 			/*
 				start loading page data from AssetBundle.
-				
-				2step(experimental).
-				1.load scene resources(additional assetbundles) automatically.
-				2.load scene itself then add 1's resources.
 			*/
 			cont.StartCoroutine(
 				// load resource first.(no mean yet..).
 				CacheReadyThenOpenScene(
-					url + "resources", 
-					(AssetBundle sceneResources) => {
-						Debug.Log("succeeded to load asset of scene:" + url);
-						
-						// open contentsPaths.
-						var contentsPaths = new List<string> {
-							// "Assets/Index/Camera.prefab",
-							// "Assets/Index/Canvas.prefab",
-							// "Assets/Index/EventSystem.prefab"
-						};
-						
-						cont.StartCoroutine(
-							CacheReadyThenOpenScene(
-								url, 
-								(AssetBundle asset) => {
-									OpenSceneAsset(asset.GetAllScenePaths()[0], sceneResources, contentsPaths);
-								}
-							)
-						);
+					url, 
+					(AssetBundle asset) => {
+						OpenSceneAsset(asset.GetAllScenePaths()[0]);
 					}
 				)
 			);
@@ -150,22 +131,13 @@ namespace UniCMS
 			Finally(asset);
 		}
 		
-		private void OpenSceneAsset (string sceneNameSourceStr, AssetBundle sceneResources, List<string> contentsPaths) {
+		private void OpenSceneAsset (string sceneNameSourceStr) {
 			var bundledSceneName = ToSceneName(sceneNameSourceStr);
 			
 			// load scene syncronously.
 			SceneManager.LoadScene(bundledSceneName, LoadSceneMode.Single);
 			
 			var destinationScene = SceneManager.GetSceneByName(bundledSceneName);
-			
-			// can load assets automatically. works, but experimental.
-			foreach (var contentsPath in contentsPaths) {
-				var obj = sceneResources.LoadAsset(contentsPath);
-				var instantiated = GameObject.Instantiate(obj) as GameObject;
-				UnityEngine.Object.DontDestroyOnLoad(instantiated);
-				
-				SceneManager.MoveGameObjectToScene(instantiated, destinationScene);
-			}
 		}
 		
 		private string ToSceneName(string path) {
