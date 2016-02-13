@@ -7,11 +7,10 @@ using UnityEngine.SceneManagement;
 namespace UniCMS {
 	public class UniCMS {
 		public const string BOOT_HTML_NAME = "index.html";
+		public const string PATH_DELIMITER = "/";
 	}
 	
 	public class BootViewController : MonoBehaviour {
-		private const bool IS_DEBUG = true;
-		
 		public static List<string> indexies;
 		
 		private static SiteManager siteManager;
@@ -26,7 +25,7 @@ namespace UniCMS {
 			// set url for resources.
 			if (string.IsNullOrEmpty(Application.absoluteURL)) {
 				var localAssetPathBase = Directory.GetParent(dataPath).ToString();
-				var localAssetPath = Path.Combine(localAssetPathBase, "UniCMSWeb/" + UniCMS.BOOT_HTML_NAME);
+				var localAssetPath = Path.Combine(localAssetPathBase, "UnidonWeb/" + UniCMS.BOOT_HTML_NAME);
 				
 				url = "file://" + localAssetPath;
 			} else {
@@ -35,8 +34,8 @@ namespace UniCMS {
 			
 			if (url.StartsWith("file://")) {
 				Debug.Log("running in local. attaching websocket debugguer. browser's log window is suck.");
-				var webSocketConsole = new WebSocketConsole();
-				Application.logMessageReceived += webSocketConsole.SendLog;
+				// var webSocketConsole = new WebSocketConsole();
+				// Application.logMessageReceived += webSocketConsole.SendLog;
 			} else {
 				Debug.Log("running in production.");
 			}
@@ -51,15 +50,6 @@ namespace UniCMS {
 			// usingMemory:		1,143,025 
 			// reservedMemory:	1,585,093
 			
-			// ここから別のSceneをBuildTargetに入れてビルドして、どうなるのかみてみる。
-			// usingMemory:		1,768,850 
-			// reservedMemory:	2,223,982
-			
-			// ということで、Sceneリストに書くだけでビルドに巻き込まれるので、書かずに完全に別にビルドするのが得策っぽい。
-			
-			// Q.使用してないリソースがこのプロジェクトに増えた場合ってどうなるの？画像とか。
-			// A.当然、容量は増えないので平和っぽい。
-			
 			// use this for debugging, editing.
 			if (SceneManager.GetActiveScene().name != "Boot") {
 				Debug.LogError("this is not Boot scene, current scene is:" + SceneManager.GetActiveScene().name);	
@@ -68,20 +58,12 @@ namespace UniCMS {
 			
 			// loaded from Boot scene. start loading index scene.
 			var siteManagerObj = GameObject.Find("SiteManagerObject");
+			DontDestroyOnLoad(siteManagerObj);
 			
 			siteManager = new SiteManager(siteManagerObj, url);
 			
 			Debug.Log("urlによって呼び出すものを変えればいい。index.htmlからきてるなら、index。それ以外ならそれ以外のコンテンツを読み出す。 url:" + url);
 			siteManager.LoadIndexView();
-		}
-		
-		public void Start () {
-			if (siteManager != null) return;
-			
-			var url = Application.absoluteURL;
-			
-			var siteManagerObj = GameObject.Find("SiteManagerObject");
-			siteManager = new SiteManager(siteManagerObj, url);
 		}
 	}
 	
