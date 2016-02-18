@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UniCMS;
+using Unidon;
 
 public class P1Controller : MonoBehaviour {
 
@@ -16,5 +16,9 @@ public class P1Controller : MonoBehaviour {
 	
 	public void OnBackTapped () {
 		SiteManager.sManager.BackToIndex();
+	}
+	
+	public void GoToPage (int index) {
+		SiteManager.sManager.OpenScene("page1");
 	}
 }

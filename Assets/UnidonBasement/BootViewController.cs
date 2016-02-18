@@ -4,12 +4,12 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace UniCMS {
-	public class UniCMS {
+namespace Unidon {
+	public class UnidonSettings {
 		public const string BOOT_HTML_NAME = "index.html";
 		public const string PATH_DELIMITER = "/";
 		
-		public const string CONTENTS_PATH = "Contents";
+		public const string CONTENTS_PATH = "UnidonContents";
 		public const string CONTENTS_TARGET_EXTENSION = ".unity";
 	}
 	
@@ -28,7 +28,7 @@ namespace UniCMS {
 			// set url for resources.
 			if (string.IsNullOrEmpty(Application.absoluteURL)) {
 				var localAssetPathBase = Directory.GetParent(dataPath).ToString();
-				var localAssetPath = Path.Combine(localAssetPathBase, "UnidonWeb/" + UniCMS.BOOT_HTML_NAME);
+				var localAssetPath = Path.Combine(localAssetPathBase, "UnidonWeb/" + UnidonSettings.BOOT_HTML_NAME);
 				
 				url = "file://" + localAssetPath;
 			} else {

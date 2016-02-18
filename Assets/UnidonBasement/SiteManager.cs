@@ -5,8 +5,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace UniCMS
-{
+namespace Unidon {
     public class SiteManager {
 		private readonly GameObject siteManagerObj;
 		private BootViewController cont;
@@ -23,7 +22,7 @@ namespace UniCMS
 		public SiteManager (GameObject siteManagerObj, string indexUrl) {
 			this.siteManagerObj = siteManagerObj;
 			this.cont = siteManagerObj.GetComponent<BootViewController>() as BootViewController;
-			this.basePath = indexUrl.Replace(UniCMS.BOOT_HTML_NAME, string.Empty);
+			this.basePath = indexUrl.Replace(UnidonSettings.BOOT_HTML_NAME, string.Empty);
 			this.targetAssetPathBase = Path.Combine(basePath, "AssetBundles");
 			
 			Caching.CleanCache();
@@ -46,7 +45,7 @@ namespace UniCMS
 				return;
 			}
 			
-			if (url.StartsWith(UniCMS.PATH_DELIMITER)) {
+			if (url.StartsWith(UnidonSettings.PATH_DELIMITER)) {
 				Debug.LogError("/Aとかで来てる。どうすっかな〜〜 url:" + url);
 				return;
 			}
