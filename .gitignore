@@ -3,7 +3,6 @@
 
 *.csproj
 
-Assets/link.xml
 
 Assets/VSCode/*
 
@@ -17,3 +16,5 @@ obj/*
 
 
 UnidonWeb/*
+
+Assets/VSCode.meta
