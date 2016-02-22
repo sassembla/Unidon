@@ -27,43 +27,42 @@ namespace Unidon {
 			BuildPipeline.BuildAssetBundles(assetTargetPath, 0, BuildTarget.WebGL);
 		}
 		
-// 		[MenuItem ("Unidon/Generate link.xml")] static void GenerateLinkXML () {
-// 			Debug.LogError("unused. this mechanism is not so effective yet. read comment of below of this Debug.LogError.");
-// 			/*
-// 				えーっとScriptのサイズを小さくしつつAssetBundleでのローディング最小化を目指して色々粘ってみたんですが
-// 				link.xmlは書いたものが読み込まれるものの自動的なコードのattachに失敗するので全く無意味でしたよ。悲しい。
-// 				今はdependenciesをbootに持つことで解決してる。
-// 				http://sassembla.github.io/Public/2016:02:11%204-33-38/2016:02:11%204-33-38.html
-				
-// 				いろいろ判明するまで放置。
-// 			*/
-// 			var classIds = new List<int>{
-// 				1,
-// 4,
-// 20,
-// 21,
-// 28,
-// 48,
-// 89,
-// 92,
-// 104,
-// 114,
-// 115,
-// 128,
-// 157,
-// 213,
-// 222,
-// 223,
-// 224,
-// 258,};
-// 			ClassIdCollector.ExportLinkXMLWithUsingClassIds(classIds);
-// 			AssetDatabase.Refresh();
-// 		}
+		[MenuItem ("Unidon/Generate link.xml")] static void GenerateLinkXML () {
+			var classIds = new HashSet<int>{
+				1,
+				4,
+				20,
+				21,
+				28,
+				48,
+				89,
+				92,
+				104,
+				114,
+				114,
+				114,
+				114,
+				114,
+				114,
+				114,
+				114,
+				115,
+				128,
+				157,
+				213,
+				222,
+				223,
+				224,
+				258,
+			};
+			ClassIdCollector.ExportLinkXMLWithUsingClassIds(classIds);
+			AssetDatabase.Refresh();
+		}
 		
 		[MenuItem ("Unidon/Publish Site")] static void Publish () {
 			BuildContentAssets();
 			
-			// GenerateLinkXML();
+			GenerateLinkXML();
 			
 			var targetPath = FileController.PathCombine(Directory.GetParent(Application.dataPath).ToString(), "UnidonWeb");
 			BuildPipeline.BuildPlayer(new string[]{"Assets/UnidonBasement/Boot.unity"}, targetPath, BuildTarget.WebGL, 0);
